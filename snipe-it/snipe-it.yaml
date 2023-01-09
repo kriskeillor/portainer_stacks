@@ -1,0 +1,47 @@
+version: "3"
+services:
+  mysql:
+    image: mysql
+    container_name: snipe_mysql_db
+    restart: unless-stopped
+    volumes:
+      - kk_snipe_sqldata:/var/lib/mysql
+    environment:
+      - TZ=America/New_York
+      - MYSQL_ROOT_PASSWORD=snipedb
+      - MYSQL_USER=snipedb
+      - MYSQL_PASSWORD=snipedb
+      - MYSQL_DATABASE=snipedb
+    ports:
+      - "3306:3306"
+  snipeit:
+    image: linuxserver/snipe-it:latest
+    container_name: snipe-it
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    volumes:
+      - kk_snipe_data:/config
+    environment:
+      - APP_URL=https://10.10.1.10:4343
+      - NGINX_APP_URL=10.10.1.10:443
+      - MYSQL_PORT_3306_TCP_ADDR=mysql
+      - MYSQL_PORT_3306_TCP_PORT=3306
+      - MYSQL_DATABASE=snipedb
+      - MYSQL_USER=snipedb
+      - MYSQL_PASSWORD=snipedb
+    networks:
+      snipenet:
+        ipv4_address: 10.10.177.10
+    ports:
+      - "4343:4343"
+networks:
+  snipenet:
+    ipam:
+      driver: default
+      config:
+      - subnet: "10.10.117.0/24"
+volumes:
+  kk_snipe_sqldata:
+  kk_snipe_data:
+
