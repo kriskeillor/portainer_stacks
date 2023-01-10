@@ -1,9 +1,10 @@
+# v1.1 Volumes updated and network config removed, thanks Josh
+# v1.0 Prototype copied from online refs
+
 version: "3"
 services:
   mysql:
     image: mysql
-    container_name: snipe_mysql_db
-    restart: unless-stopped
     volumes:
       - kk_snipe_sqldata:/var/lib/mysql
     environment:
@@ -35,13 +36,19 @@ services:
         ipv4_address: 10.10.177.10
     ports:
       - "4343:4343"
+
 networks:
   snipenet:
-    ipam:
-      driver: default
-      config:
-      - subnet: "10.10.117.0/24"
+
 volumes:
   kk_snipe_sqldata:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.10.117.41,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14,nfsvers=4"
+      device: ":/pools/pool1/snipe_it_mysql"
   kk_snipe_data:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.10.117.42,rw,noatime,rsize=8192,rsize=8192,tcp,timeo=14,nfsvers=4"
+      device: ":/pools/pool1/snipe_it_data"
 
