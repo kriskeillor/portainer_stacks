@@ -1,3 +1,4 @@
+# v1.2.1 Corrected db address alias, thanks Nathan
 # v1.2 Port mapping and image versioning updated, SQL port mapping removed - thanks Garth  
 # v1.1 Volumes updated and network config removed, thanks Josh
 # v1.0 Prototype copied from online refs
@@ -15,10 +16,6 @@ services:
       - MYSQL_USER=snipedb
       - MYSQL_PASSWORD=snipedb
       - MYSQL_DATABASE=snipedb
-    #deploy:
-    #  replicas: 1
-    #  placement:
-    #    constraints: [node.hostname == gump]
 
   snipeit:
     image: linuxserver/snipe-it:latest
@@ -31,11 +28,12 @@ services:
     environment:
       - APP_URL=https://10.10.1.10:4343
       - NGINX_APP_URL=10.10.1.10:443
-      - MYSQL_PORT_3306_TCP_ADDR=mysql
+      - MYSQL_PORT_3306_TCP_ADDR=db
       - MYSQL_PORT_3306_TCP_PORT=3306
       - MYSQL_DATABASE=snipedb
       - MYSQL_USER=snipedb
       - MYSQL_PASSWORD=snipedb
+      - MAIL_ENV_FROM_ADDR=techsupport@bellinghammakerspace.org
     ports:
       - "4343:443"
 
@@ -50,4 +48,5 @@ volumes:
       type: "nfs"
       o: "addr=10.10.117.42,rw,noatime,rsize=8192,rsize=8192,tcp,timeo=14,nfsvers=4"
       device: ":/pools/pool1/snipe_it_data"
+
 
