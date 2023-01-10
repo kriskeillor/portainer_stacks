@@ -1,20 +1,25 @@
+# v1.2 Port mapping and image versioning updated, SQL port mapping removed - thanks Garth  
 # v1.1 Volumes updated and network config removed, thanks Josh
 # v1.0 Prototype copied from online refs
 
 version: "3"
+
 services:
-  mysql:
-    image: mysql
+  db:
+    image: mysql:8.0-debian
     volumes:
       - kk_snipe_sqldata:/var/lib/mysql
     environment:
-      - TZ=America/New_York
+      - TZ=America/Los_Angeles
       - MYSQL_ROOT_PASSWORD=snipedb
       - MYSQL_USER=snipedb
       - MYSQL_PASSWORD=snipedb
       - MYSQL_DATABASE=snipedb
-    ports:
-      - "3306:3306"
+    #deploy:
+    #  replicas: 1
+    #  placement:
+    #    constraints: [node.hostname == gump]
+
   snipeit:
     image: linuxserver/snipe-it:latest
     container_name: snipe-it
@@ -31,14 +36,8 @@ services:
       - MYSQL_DATABASE=snipedb
       - MYSQL_USER=snipedb
       - MYSQL_PASSWORD=snipedb
-    networks:
-      snipenet:
-        ipv4_address: 10.10.177.10
     ports:
-      - "4343:4343"
-
-networks:
-  snipenet:
+      - "4343:443"
 
 volumes:
   kk_snipe_sqldata:
